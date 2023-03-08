@@ -1,7 +1,7 @@
 package token
 
 import (
-	"bank/db/util"
+	"bank/util"
 	"testing"
 	"time"
 

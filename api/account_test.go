@@ -3,7 +3,7 @@ package api
 import (
 	mockdb "bank/db/mock"
 	db "bank/db/sqlc"
-	"bank/db/util"
+	"bank/util"
 	"bytes"
 	"database/sql"
 	"encoding/json"
@@ -82,7 +82,7 @@ func TestGetAccountAPI(t *testing.T) {
 			tc.buildStubs(store)
 
 			// start test server and send http request
-			server := NewServer(store)
+			server := NewTestServer(t, store)
 			recorder := httptest.NewRecorder()
 
 			url := fmt.Sprintf("/accounts/%d", tc.accountID)
@@ -166,7 +166,7 @@ func TestCreateAccountAPI(t *testing.T) {
 			tc.buildStubs(store)
 
 			// start test server and send http request
-			server := NewServer(store)
+			server := NewTestServer(t, store)
 			recorder := httptest.NewRecorder()
 
 			url := "/accounts"
@@ -240,7 +240,7 @@ func TestDeleteAccountAPI(t *testing.T) {
 			tc.buildStubs(store)
 
 			// start test server and send http request
-			server := NewServer(store)
+			server := NewTestServer(t, store)
 			recorder := httptest.NewRecorder()
 
 			url := fmt.Sprintf("/accounts/%d", tc.ID)
@@ -331,7 +331,7 @@ func TestUpdateAccountAPI(t *testing.T) {
 			tc.buildStubs(store)
 
 			// start test server and send http request
-			server := NewServer(store)
+			server := NewTestServer(t, store)
 			recorder := httptest.NewRecorder()
 
 			url := "/accounts"

@@ -1,7 +1,7 @@
 package db
 
 import (
-	"bank/db/util"
+	"bank/util"
 	"database/sql"
 	"log"
 	"os"

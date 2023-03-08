@@ -3,7 +3,7 @@ package main
 import (
 	"bank/api"
 	db "bank/db/sqlc"
-	"bank/db/util"
+	"bank/util"
 	"database/sql"
 	"log"
 
@@ -22,7 +22,10 @@ func main() {
 	}
 
 	store := db.NewStore(connection)
-	server := api.NewServer(store)
+	server, err := api.NewServer(config, store)
+	if err != nil {
+		log.Fatal("error while creating server:", err)
+	}
 
 	err = server.StartServer(config.ServerAddress)
 	if err != nil {

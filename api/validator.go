@@ -1,7 +1,7 @@
 package api
 
 import (
-	"bank/db/util"
+	"bank/util"
 
 	"github.com/go-playground/validator/v10"
 )
