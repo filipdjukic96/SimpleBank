@@ -1,55 +1,55 @@
-# # This workflow will build a golang project
-# # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
 
-# name: Run unit test
+name: Run unit test
 
-# on:
-#   push:
-#     branches: [ "main" ]
-#   pull_request:
-#     branches: [ "main" ]
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
-# jobs:
+jobs:
 
-#   test:
-#     name: Build
-#     runs-on: ubuntu-latest
+  test:
+    name: Build
+    runs-on: ubuntu-latest
 
-#     services:
-#       postgres:
-#         image: postgres:12
-#         env:
-#           POSTGRES_USER: root
-#           POSTGRES_PASSWORD: secret
-#           POSTGRES_DB: simple_bank
-#         ports:
-#           - 5432:5432
-#         # Set health checks to wait until postgres has started
-#         options: >-
-#           --health-cmd pg_isready
-#           --health-interval 10s
-#           --health-timeout 5s
-#           --health-retries 5
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: secret
+          POSTGRES_DB: simple_bank
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
-#     steps:
+    steps:
 
-#     - name: Set up Go
-#       uses: actions/setup-go@v3
-#       with:
-#         go-version: ^1.19
-#       id: go
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: ^1.19
+      id: go
 
-#     - name: Check out code into the Go module directory
-#       run: actions/checkout@v2
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
 
-#     - name: Install golang-migrate
-#       run: |
-#         curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.2/migrate.linux-amd64.tar.gz | tar xvz
-#         sudo mv migrate.linux-amd64 /usr/bin/migrate
-#         which migrate
+    - name: Install golang-migrate
+      run: |
+        curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.2/migrate.linux-amd64.tar.gz | tar xvz
+        sudo mv migrate.linux-amd64 /usr/bin/migrate
+        which migrate
 
-#     - name: Run migrations
-#       run: make migrateup
+    - name: Run migrations
+      run: make migrateup
 
-#     - name: Test
-#       run: make test
+    - name: Test
+      run: make test
