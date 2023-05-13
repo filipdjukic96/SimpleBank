@@ -48,6 +48,7 @@ func (server *Server) setupRouting() {
 	// these routes don't need authorization
 	router.POST("/users", server.createUser)
 	router.POST("/users/login", server.loginUser)
+	router.POST("/tokens/renew_access", server.renewAccessToken)
 
 	//these routes need authorization
 	authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
