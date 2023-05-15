@@ -11,7 +11,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-// servers HTTP requests for the banking service
+// serves HTTP requests for the banking service
 type Server struct {
 	config     util.Config
 	store      db.Store
