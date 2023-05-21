@@ -47,6 +47,8 @@ func (server *Server) CreateUser(ctx context.Context, req *pb.CreateUserRequest)
 		return nil, status.Errorf(codes.Internal, "username already exists %s", err)
 	}
 
+	// send verification email to user
+
 	// omit hashed password from the response for security reasons
 	response := &pb.CreateUserResponse{
 		User: convertUser(user),
