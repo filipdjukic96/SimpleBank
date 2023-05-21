@@ -2,6 +2,7 @@ package gapi
 
 import (
 	"context"
+	"net/http"
 	"time"
 
 	"github.com/rs/zerolog/log"
@@ -38,4 +39,54 @@ func GrpcLogger(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo
 		Msg("received a gRPC request")
 
 	return result, err
+}
+
+type ResponseRecorder struct {
+	http.ResponseWriter
+	StatusCode int
+	Body       []byte
+}
+
+// override WriteHeader function from http.ResponseWriter so we can intercept the statusCode of the HTTP call
+func (rec *ResponseRecorder) WriteHeader(statusCode int) {
+	rec.StatusCode = statusCode
+	rec.ResponseWriter.WriteHeader(statusCode)
+}
+
+// override WriteHeader function from http.ResponseWriter so we can intercept the body of the HTTP call
+func (rec *ResponseRecorder) Write(body []byte) (int, error) {
+	rec.Body = body
+	return rec.ResponseWriter.Write(body)
+}
+
+func HttpLogger(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		startTime := time.Now()
+
+		// wrap response writer into our custom recorder so we catch the http status code
+		responseRecorder := &ResponseRecorder{
+			ResponseWriter: res,
+			StatusCode:     http.StatusOK,
+		}
+
+		handler.ServeHTTP(responseRecorder, req)
+
+		duration := time.Since(startTime)
+
+		logger := log.Info()
+
+		if responseRecorder.StatusCode != http.StatusOK {
+			logger = log.Error().Bytes("body", responseRecorder.Body)
+		}
+
+		logger.
+			Str("protocol", "HTTP").
+			Str("method", req.Method).
+			Str("path", req.RequestURI).
+			Int("status_code", int(responseRecorder.StatusCode)).
+			Str("status_text", http.StatusText(responseRecorder.StatusCode)).
+			Dur("duration", duration).
+			Msg("received a HTTP request")
+
+	})
 }
