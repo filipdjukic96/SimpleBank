@@ -19,6 +19,9 @@ migratedown:
 migratedown1: # migrates down just once
 	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose down 1
  
+new_migration:
+	migrate create -ext sql -dir db/migration -seq $(name)
+
 sqlc:
 	docker run --rm -v "%cd%:/src" -w /src kjconroy/sqlc generate
 
@@ -42,4 +45,4 @@ evans:
 redis:
 	docker run --name redis -p 6379:6379 -d redis:7-alpine
 
-.PHONY: postgres createdb dropdb migrateup migratedown migreateup1 migratedown1 sqlc test server mock proto evans redis
+.PHONY: postgres createdb dropdb migrateup migratedown migreateup1 migratedown1 sqlc test server mock proto evans redis new_migration
